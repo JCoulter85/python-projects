@@ -25,3 +25,27 @@ print(data.describe())
 # unique values in each column
 for col in data.columns:
         print(f"{col}: {data[col].nunique()} unique values")
+        
+# summary statistics for numeric columns
+print("\nSummary Statistics:")
+print(data.describe())
+
+# count unique values in categorical columns
+for col in data.select_dtypes(include=['object']).columns:
+    print(f"{col}: {data[col].nunique()} unique values")
+    
+businesses_by_county = data.groupby('PPB County')['Business Name'].count()
+print("\nBusinesses by County:")
+print(businesses_by_county)
+
+# avg_revenue_by_type = data.groupby('business_type')['revenue'].mean()
+# print("\nAverage Revenue by Business Type:")
+# print(avg_revenue_by_type)
+
+# sort by the number of businesses in descending order
+businesses_by_county = businesses_by_county.sort_values(ascending=False)
+print("\nBusinesses by County (Sorted):")
+print(businesses_by_county)
+
+# Save the insights
+businesses_by_county.to_csv("businesses_by_county.csv")
