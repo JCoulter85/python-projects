@@ -10,6 +10,22 @@ def get_pokemon_data(pokemon_name):
         print("Pokémon not found! Please check the name.")
         return None
     
+def get_weaknesses(types):
+    weaknesses = set()
+    for pokemon_type in types:
+        type_url = pokemon_type['type']['url']  # Get the URL for the type
+        response = requests.get(type_url)
+        
+        if response.status_code == 200:
+            type_data = response.json()
+            # Add weaknesses (double_damage_from types)
+            for weak_type in type_data['damage_relations']['double_damage_from']:
+                weaknesses.add(weak_type['name'])
+        else:
+            print(f"Error fetching data for type {pokemon_type['type']['name']}")
+    
+    return list(weaknesses)  # Convert set to list
+    
 pokemon_name = input("Enter Pokémon name: ")
 data = get_pokemon_data(pokemon_name)
 
@@ -17,7 +33,7 @@ if data:
     print(f"Pokémon Name: {data['name'].capitalize()}")
     print(f"Base Experience: {data['base_experience']}")
     
-def display_pokemon_stats(date):
+def display_pokemon_stats(data):
     print("\nPokémon Details:")
     print(f"Name: {data['name'].capitalize()}")
     print(f"Base Experience: {data['base_experience']}")
