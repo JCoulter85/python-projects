@@ -33,3 +33,17 @@ for stat in data['stats']:
     
 # display abilities
 print("\nAbilities:")
+for ability in data['abilities']:
+    print(f"- {ability['ability']['name'].capitalize()}")
+    
+# main loop
+while True:
+    pokemon_name = input("\nEnter Pokémon name (or type 'quit' to exit): ").strip()
+    
+    if pokemon_name.lower() == "quit":
+        print("Goodbye!")
+        break
+    data = get_pokemon_data(pokemon_name)
+    
+    if data:
+        display_pokemon_stats(data)
