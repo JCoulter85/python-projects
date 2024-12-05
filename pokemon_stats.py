@@ -1,5 +1,6 @@
 import requests
 
+# Fetch Pokémon data from the API
 def get_pokemon_data(pokemon_name):
     url = f"https://pokeapi.co/api/v2/pokemon/{pokemon_name.lower()}"
     response = requests.get(url)
@@ -9,7 +10,8 @@ def get_pokemon_data(pokemon_name):
     else:
         print("Pokémon not found! Please check the name.")
         return None
-    
+
+# Fetch weaknesses based on Pokémon types
 def get_weaknesses(types):
     weaknesses = set()
     for pokemon_type in types:
@@ -25,57 +27,21 @@ def get_weaknesses(types):
             print(f"Error fetching data for type {pokemon_type['type']['name']}")
     
     return list(weaknesses)  # Convert set to list
-    
-pokemon_name = input("Enter Pokémon name: ")
-data = get_pokemon_data(pokemon_name)
 
-if data:
-    print(f"Pokémon Name: {data['name'].capitalize()}")
-    print(f"Base Experience: {data['base_experience']}")
-    
+# Display Pokémon stats
 def display_pokemon_stats(data):
     print("\nPokémon Details:")
     print(f"Name: {data['name'].capitalize()}")
     print(f"Base Experience: {data['base_experience']}")
     
-# display types
-types = data['types']  # Keep the raw list of dictionaries from the API
-type_names = [t['type']['name'] for t in types]
-print(f"Types: {', '.join(type_names)}")
+    # Extract and display types
+    types = data.get('types', [])
+    if not types:
+        print("No types found for this Pokémon.")
+        return
 
-# display stats
-print("\nStats:")
-for stat in data['stats']:
-    print(f"{stat['stat']['name'].capitalize()}: {stat['base_stat']}")
-    
-# display abilities
-print("\nAbilities:")
-for ability in data['abilities']:
-    print(f"- {ability['ability']['name'].capitalize()}")
-    
-# Fetch and display weaknesses
-weaknesses = get_weaknesses(types)  # Pass the raw `types` list to the function
-print("\nWeaknesses:")
-print(", ".join(weaknesses))
-
-# main loop
-while True:
-    pokemon_name = input("\nEnter Pokémon name (or type 'quit' to exit): ").strip()
-    
-    if pokemon_name.lower() == "quit":
-        print("Goodbye!")
-        break
-    data = get_pokemon_data(pokemon_name)
-    
-    if data:
-        display_pokemon_stats(data)
-    print("\nPokémon Details:")
-    print(f"Name: {data['name'].capitalize()}")
-    print(f"Base Experience: {data['base_experience']}")
-    
-    # Display types
-    types = [t['type']['name'] for t in data['types']]
-    print(f"Types: {', '.join(types)}")
+    type_names = [t['type']['name'] for t in types]  # For display purposes only
+    print(f"Types: {', '.join(type_names)}")
     
     # Display stats
     print("\nStats:")
@@ -86,3 +52,26 @@ while True:
     print("\nAbilities:")
     for ability in data['abilities']:
         print(f"- {ability['ability']['name'].capitalize()}")
+    
+    # Fetch and display weaknesses
+    weaknesses = get_weaknesses(types)  # Pass the raw `types` list
+    print("\nWeaknesses:")
+    print(", ".join(weaknesses))
+
+# Main loop
+while True:
+    pokemon_name = input("\nEnter Pokémon name (or type 'quit' to exit): ").strip()
+    
+    if pokemon_name.lower() == "quit":
+        print("Goodbye!")
+        break
+
+    # Fetch Pokémon data
+    data = get_pokemon_data(pokemon_name)
+    
+    if not data:
+        print("No data available for this Pokémon.")
+        continue
+
+    # Display the Pokémon's stats
+    display_pokemon_stats(data)
