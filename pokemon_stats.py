@@ -47,3 +47,20 @@ while True:
     
     if data:
         display_pokemon_stats(data)
+    print("\nPokémon Details:")
+    print(f"Name: {data['name'].capitalize()}")
+    print(f"Base Experience: {data['base_experience']}")
+    
+    # Display types
+    types = [t['type']['name'] for t in data['types']]
+    print(f"Types: {', '.join(types)}")
+    
+    # Display stats
+    print("\nStats:")
+    for stat in data['stats']:
+        print(f"{stat['stat']['name'].capitalize()}: {stat['base_stat']}")
+    
+    # Display abilities
+    print("\nAbilities:")
+    for ability in data['abilities']:
+        print(f"- {ability['ability']['name'].capitalize()}")
