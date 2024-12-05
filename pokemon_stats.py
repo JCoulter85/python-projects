@@ -1,4 +1,7 @@
 import requests
+from tkinter import Tk, Label
+from PIL import Image, ImageTk  # Install via `pip install pillow`
+import io
 
 # Fetch Pokémon data from the API
 def get_pokemon_data(pokemon_name):
@@ -10,6 +13,19 @@ def get_pokemon_data(pokemon_name):
     else:
         print("Pokémon not found! Please check the name.")
         return None
+
+# Fetch weaknesses based on Pokémon types
+def get_weaknesses(types):
+    weaknesses = set()
+    for pokemon_type in types:
+        type_url = pokemon_type['type']['url']
+        response = requests.get(type_url)
+        
+        if response.status_code == 200:
+            type_data = response.json()
+            for weak_type in type_data['damage_relations']['double_damage_from']:
+                weaknesses.add(weak_type['name'])
+    return list(weaknesses)
 
 # Fetch evolution chain from species data
 def get_evolution_chain(species_url):
@@ -30,18 +46,22 @@ def get_evolution_chain(species_url):
             return evolutions
     return []
 
-# Fetch weaknesses based on Pokémon types
-def get_weaknesses(types):
-    weaknesses = set()
-    for pokemon_type in types:
-        type_url = pokemon_type['type']['url']
-        response = requests.get(type_url)
-        
-        if response.status_code == 200:
-            type_data = response.json()
-            for weak_type in type_data['damage_relations']['double_damage_from']:
-                weaknesses.add(weak_type['name'])
-    return list(weaknesses)
+# Display Pokémon image using tkinter
+def show_pokemon_image(image_url):
+    response = requests.get(image_url)
+    if response.status_code == 200:
+        image_data = response.content
+        image = Image.open(io.BytesIO(image_data))
+        image = image.resize((400, 400))  # Resize for better display
+
+        # Display image in a tkinter window
+        root = Tk()
+        root.title("Pokémon Image")
+        img = ImageTk.PhotoImage(image)
+        label = Label(root, image=img)
+        label.image = img  # Keep a reference to avoid garbage collection
+        label.pack()
+        root.mainloop()
 
 # Display Pokémon stats
 def display_pokemon_stats(data):
@@ -68,8 +88,7 @@ def display_pokemon_stats(data):
     for ability in data['abilities']:
         print(f"- {ability['ability']['name'].capitalize()}")
     
-      
-    # Display moves specific to the Pokémon
+    # Display Pokémon moves
     print("\nMoves (Specific to This Pokémon):")
     level_up_moves = [
         move['move']['name'].capitalize()
@@ -80,6 +99,11 @@ def display_pokemon_stats(data):
         print(", ".join(level_up_moves[:10]))  # Limit to 10 moves
     else:
         print("No level-up moves found for this Pokémon.")
+
+    # Fetch and display weaknesses (now below moves)
+    weaknesses = get_weaknesses(types)
+    print("\nWeaknesses:")
+    print(", ".join(weaknesses))
     
     # Fetch and display evolution chain
     print("\nEvolution Chain:")
@@ -87,10 +111,13 @@ def display_pokemon_stats(data):
     evolutions = get_evolution_chain(species_url)
     print(" → ".join(evolutions))
 
-     # Fetch and display weaknesses
-    weaknesses = get_weaknesses(types)
-    print("\nWeaknesses:")
-    print(", ".join(weaknesses))
+    # Show Pokémon sprite
+    sprite_url = data['sprites']['front_default']
+    if sprite_url:
+        print("\nDisplaying Pokémon image...")
+        show_pokemon_image(sprite_url)
+    else:
+        print("No image available for this Pokémon.")
 
 # Main loop
 while True:
