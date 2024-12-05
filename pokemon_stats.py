@@ -39,8 +39,9 @@ def display_pokemon_stats(data):
     print(f"Base Experience: {data['base_experience']}")
     
 # display types
-types = [t['type']['name'] for t in data['types']]
-print(f"Types: {', '.join(types)}")
+types = data['types']  # Keep the raw list of dictionaries from the API
+type_names = [t['type']['name'] for t in types]
+print(f"Types: {', '.join(type_names)}")
 
 # display stats
 print("\nStats:")
@@ -52,6 +53,11 @@ print("\nAbilities:")
 for ability in data['abilities']:
     print(f"- {ability['ability']['name'].capitalize()}")
     
+# Fetch and display weaknesses
+weaknesses = get_weaknesses(types)  # Pass the raw `types` list to the function
+print("\nWeaknesses:")
+print(", ".join(weaknesses))
+
 # main loop
 while True:
     pokemon_name = input("\nEnter Pokémon name (or type 'quit' to exit): ").strip()
