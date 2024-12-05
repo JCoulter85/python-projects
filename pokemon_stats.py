@@ -11,22 +11,37 @@ def get_pokemon_data(pokemon_name):
         print("Pokémon not found! Please check the name.")
         return None
 
+# Fetch evolution chain from species data
+def get_evolution_chain(species_url):
+    response = requests.get(species_url)
+    if response.status_code == 200:
+        species_data = response.json()
+        evolution_chain_url = species_data['evolution_chain']['url']
+        evolution_response = requests.get(evolution_chain_url)
+        
+        if evolution_response.status_code == 200:
+            evolution_data = evolution_response.json()
+            chain = evolution_data['chain']
+            
+            evolutions = []
+            while chain:
+                evolutions.append(chain['species']['name'].capitalize())
+                chain = chain['evolves_to'][0] if chain['evolves_to'] else None
+            return evolutions
+    return []
+
 # Fetch weaknesses based on Pokémon types
 def get_weaknesses(types):
     weaknesses = set()
     for pokemon_type in types:
-        type_url = pokemon_type['type']['url']  # Get the URL for the type
+        type_url = pokemon_type['type']['url']
         response = requests.get(type_url)
         
         if response.status_code == 200:
             type_data = response.json()
-            # Add weaknesses (double_damage_from types)
             for weak_type in type_data['damage_relations']['double_damage_from']:
                 weaknesses.add(weak_type['name'])
-        else:
-            print(f"Error fetching data for type {pokemon_type['type']['name']}")
-    
-    return list(weaknesses)  # Convert set to list
+    return list(weaknesses)
 
 # Display Pokémon stats
 def display_pokemon_stats(data):
@@ -40,7 +55,7 @@ def display_pokemon_stats(data):
         print("No types found for this Pokémon.")
         return
 
-    type_names = [t['type']['name'] for t in types]  # For display purposes only
+    type_names = [t['type']['name'] for t in types]
     print(f"Types: {', '.join(type_names)}")
     
     # Display stats
@@ -53,8 +68,27 @@ def display_pokemon_stats(data):
     for ability in data['abilities']:
         print(f"- {ability['ability']['name'].capitalize()}")
     
-    # Fetch and display weaknesses
-    weaknesses = get_weaknesses(types)  # Pass the raw `types` list
+      
+    # Display moves specific to the Pokémon
+    print("\nMoves (Specific to This Pokémon):")
+    level_up_moves = [
+        move['move']['name'].capitalize()
+        for move in data['moves']
+        if any(method['move_learn_method']['name'] == 'level-up' for method in move['version_group_details'])
+    ]
+    if level_up_moves:
+        print(", ".join(level_up_moves[:10]))  # Limit to 10 moves
+    else:
+        print("No level-up moves found for this Pokémon.")
+    
+    # Fetch and display evolution chain
+    print("\nEvolution Chain:")
+    species_url = data['species']['url']
+    evolutions = get_evolution_chain(species_url)
+    print(" → ".join(evolutions))
+
+     # Fetch and display weaknesses
+    weaknesses = get_weaknesses(types)
     print("\nWeaknesses:")
     print(", ".join(weaknesses))
 
@@ -66,12 +100,9 @@ while True:
         print("Goodbye!")
         break
 
-    # Fetch Pokémon data
     data = get_pokemon_data(pokemon_name)
-    
     if not data:
         print("No data available for this Pokémon.")
         continue
 
-    # Display the Pokémon's stats
     display_pokemon_stats(data)
