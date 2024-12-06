@@ -1,7 +1,11 @@
 import requests
 from tkinter import Tk, Label
-from PIL import Image, ImageTk  # Install via `pip install pillow`
+from PIL import Image, ImageTk
 import io
+from colorama import Fore, Style, init
+
+# Initialize colorama
+init()
 
 # Fetch Pokémon data from the API
 def get_pokemon_data(pokemon_name):
@@ -11,7 +15,7 @@ def get_pokemon_data(pokemon_name):
     if response.status_code == 200:
         return response.json()
     else:
-        print("Pokémon not found! Please check the name.")
+        print(Fore.RED + "Pokémon not found! Please check the name." + Style.RESET_ALL)
         return None
 
 # Fetch weaknesses based on Pokémon types
@@ -52,21 +56,21 @@ def show_pokemon_image(image_url):
     if response.status_code == 200:
         image_data = response.content
         image = Image.open(io.BytesIO(image_data))
-        image = image.resize((400, 400))  # Resize for better display
+        image = image.resize((200, 200))
 
         # Display image in a tkinter window
         root = Tk()
         root.title("Pokémon Image")
         img = ImageTk.PhotoImage(image)
         label = Label(root, image=img)
-        label.image = img  # Keep a reference to avoid garbage collection
+        label.image = img
         label.pack()
         root.mainloop()
 
 # Display Pokémon stats
 def display_pokemon_stats(data):
-    print("\nPokémon Details:")
-    print(f"Name: {data['name'].capitalize()}")
+    print(Fore.YELLOW + "\nPokémon Details:" + Style.RESET_ALL)
+    print(Fore.GREEN + f"Name: {data['name'].capitalize()}" + Style.RESET_ALL)
     print(f"Base Experience: {data['base_experience']}")
     
     # Extract and display types
@@ -76,20 +80,20 @@ def display_pokemon_stats(data):
         return
 
     type_names = [t['type']['name'] for t in types]
-    print(f"Types: {', '.join(type_names)}")
+    print(Fore.CYAN + f"Types: {', '.join(type_names)}" + Style.RESET_ALL)
     
     # Display stats
-    print("\nStats:")
+    print(Fore.BLUE + "\nStats:" + Style.RESET_ALL)
     for stat in data['stats']:
         print(f"{stat['stat']['name'].capitalize()}: {stat['base_stat']}")
     
     # Display abilities
-    print("\nAbilities:")
+    print(Fore.MAGENTA + "\nAbilities:" + Style.RESET_ALL)
     for ability in data['abilities']:
         print(f"- {ability['ability']['name'].capitalize()}")
     
     # Display Pokémon moves
-    print("\nMoves (Specific to This Pokémon):")
+    print(Fore.YELLOW + "\nMoves (Specific to This Pokémon):" + Style.RESET_ALL)
     level_up_moves = [
         move['move']['name'].capitalize()
         for move in data['moves']
@@ -100,13 +104,13 @@ def display_pokemon_stats(data):
     else:
         print("No level-up moves found for this Pokémon.")
 
-    # Fetch and display weaknesses (now below moves)
+    # Fetch and display weaknesses
     weaknesses = get_weaknesses(types)
-    print("\nWeaknesses:")
+    print(Fore.RED + "\nWeaknesses:" + Style.RESET_ALL)
     print(", ".join(weaknesses))
     
     # Fetch and display evolution chain
-    print("\nEvolution Chain:")
+    print(Fore.YELLOW + "\nEvolution Chain:" + Style.RESET_ALL)
     species_url = data['species']['url']
     evolutions = get_evolution_chain(species_url)
     print(" → ".join(evolutions))
@@ -121,15 +125,16 @@ def display_pokemon_stats(data):
 
 # Main loop
 while True:
-    pokemon_name = input("\nEnter Pokémon name (or type 'quit' to exit): ").strip()
+    print(Fore.CYAN + "\nWelcome to the Pokémon Info App!" + Style.RESET_ALL)
+    pokemon_name = input(Fore.GREEN + "Enter Pokémon name (or type 'quit' to exit): " + Style.RESET_ALL).strip()
     
     if pokemon_name.lower() == "quit":
-        print("Goodbye!")
+        print(Fore.RED + "Goodbye!" + Style.RESET_ALL)
         break
 
     data = get_pokemon_data(pokemon_name)
     if not data:
-        print("No data available for this Pokémon.")
+        print(Fore.RED + "No data available for this Pokémon." + Style.RESET_ALL)
         continue
 
     display_pokemon_stats(data)
