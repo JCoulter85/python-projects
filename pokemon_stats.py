@@ -4,8 +4,8 @@ from PIL import Image, ImageTk
 import io
 from colorama import Fore, Style, init
 
-# Initialize colorama
-init()
+# Initialize colorama with conversion for Windows CMD
+init(convert=True)
 
 # Fetch Pokémon data from the API
 def get_pokemon_data(pokemon_name):
