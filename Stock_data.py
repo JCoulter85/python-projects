@@ -53,7 +53,7 @@ for ticker in tickers:
         # Display the most recent historical data (last 5 days or adjusted period)
         print(Fore.WHITE + "\nHistorical Data (Most Recent 5 Days):" + Style.RESET_ALL)
         print(data)  # Print the historical data table
-        print(Fore.LIGHTBLACK_EX + "-" * 50 + Style.RESET_ALL)  # Add a separator for readability
+        print(Fore.LIGHTBLACK_EX + "-" * 110 + Style.RESET_ALL)  # Add a separator for readability
 
     except Exception as e:
         # Handle unexpected errors and log them for review
