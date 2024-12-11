@@ -119,7 +119,7 @@ def show_last_5_days():
 
             # Display the company name and ticker with color coding
             print(Fore.YELLOW + f"\nCompany: {company_name} ({ticker})" + Style.RESET_ALL)
-            print(Fore.CYAN + f"{data}" + Style.RESET_ALL)  # Display the 5-day historical data in cyan
+            print(Style.BRIGHT + f"{data}" + Style.RESET_ALL)  # Display the 5-day historical data in lightblack
             print(Fore.LIGHTBLACK_EX + "-" * 110 + Style.RESET_ALL)  # Separator for readability
 
         except Exception as e:
@@ -128,11 +128,11 @@ def show_last_5_days():
 # Main menu loop
 while True:
     # Display current tickers
-    print("\nCurrent Companies in the Application:")
+    print(Fore.LIGHTBLUE_EX + "\nCurrent Companies in the Application:" + Style.RESET_ALL)
     print(", ".join(tickers))
 
     # Menu options
-    print("\nOptions:")
+    print(Fore.LIGHTBLUE_EX + "\nOptions:" + Style.RESET_ALL)
     print("1. Analyze a specific company")
     print("2. Add a new company")
     print("3. Remove a company")
@@ -142,7 +142,7 @@ while True:
     print("7. Exit the application")
 
     # Get user choice
-    choice = input("\nEnter your choice (1-7): ").strip()
+    choice = input(Fore.LIGHTBLUE_EX + "\nEnter your choice (1-7): " + Style.RESET_ALL).strip()
 
     if choice == "1":
         ticker_to_analyze = input("Enter the ticker symbol of the company to analyze: ").strip().upper()
