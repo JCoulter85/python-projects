@@ -15,25 +15,31 @@ for ticker in tickers:
 
     # Step 5: Fetch basic stock information and historical data.
     stock_info = stock.info
-    data = stock.history(period="1y")
+
+    # Use period="5d" and interval="1d" to fetch only the last 5 trading days.
+    data = stock.history(period="5d", interval="1d")
+
+    # Check if data is available before proceeding.
+    if data.empty:
+        print(f"No recent data available for {ticker}. Skipping...\n")
+        continue
 
     # Step 6: Extract key metrics from the stock information.
-    # Use the .get() method to safely access these metrics.
     current_price = stock_info.get('currentPrice', 'N/A')
     fifty_two_week_high = stock_info.get('fiftyTwoWeekHigh', 'N/A')
     fifty_two_week_low = stock_info.get('fiftyTwoWeekLow', 'N/A')
     average_volume = stock_info.get('averageVolume', 'N/A')
-    sector = stock_info.get('sector', 'N/A')  # Added sector information
+    sector = stock_info.get('sector', 'N/A')  # Define sector here
 
     # Step 7: Display the company's name, ticker symbol, and key metrics.
     print(f"\nStock Analysis for: {stock_info.get('shortName', 'Unknown Company')} ({ticker})")
-    print(f"Sector: {sector}")  # Display sector
+    print(f"Sector: {sector}")  # Use the sector variable here
     print(f"Current Price: ${current_price}")
     print(f"52-Week High: ${fifty_two_week_high}")
     print(f"52-Week Low: ${fifty_two_week_low}")
     print(f"Average Volume: {average_volume} shares/day")
 
-    # Step 8: Print the first few rows of historical data for this stock.
-    print("\nHistorical Data (Last 5 Days):")
-    print(data.head())
-    print("-" * 50)  # Separator for readability.
+    # Step 8: Print the most recent 5 rows of historical data for this stock.
+    print("\nHistorical Data (Most Recent 5 Days):")
+    print(data)  # Show the fetched data
+    print("-" * 50)  # Separator for readability
