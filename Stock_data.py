@@ -100,21 +100,24 @@ def compare_companies():
 # Function to show the last 5 days of data for all companies
 def show_last_5_days():
     """
-    Display the last 5 days of historical data for all companies, with color-coded headers.
+    Display the last 5 days of historical data for all companies, including the company name and ticker.
     """
     print("\nShowing last 5 days of data for all companies:\n")
     for ticker in tickers:
         try:
-            stock = yf.Ticker(ticker)
-            data = stock.history(period="5d", interval="1d")
+            stock = yf.Ticker(ticker)  # Create a Ticker object
+            stock_info = stock.info  # Fetch stock info to get the company name
+            company_name = stock_info.get('shortName', 'Unknown Company')  # Get the company name
+            data = stock.history(period="5d", interval="1d")  # Fetch last 5 days of historical data
 
-            if data.empty:
-                print(Fore.RED + f"No recent data available for {ticker}. Skipping...\n" + Style.RESET_ALL)
+            if data.empty:  # Check if data is available
+                print(Fore.RED + f"No recent data available for {company_name} ({ticker}). Skipping...\n" + Style.RESET_ALL)
                 continue
 
-            print(Fore.YELLOW + f"\nTicker: {ticker}" + Style.RESET_ALL)
-            print(Fore.WHITE + f"{data}" + Style.RESET_ALL)  # Display the 5-day historical data with color
-            print(Fore.LIGHTBLACK_EX + "-" * 110 + Style.RESET_ALL)
+            # Display the company name and ticker with color coding
+            print(Fore.YELLOW + f"\nCompany: {company_name} ({ticker})" + Style.RESET_ALL)
+            print(Fore.CYAN + f"{data}" + Style.RESET_ALL)  # Display the 5-day historical data in cyan
+            print(Fore.LIGHTBLACK_EX + "-" * 110 + Style.RESET_ALL)  # Separator for readability
 
         except Exception as e:
             print(Fore.RED + f"{ticker}: Error fetching historical data ({e}). Skipping..." + Style.RESET_ALL)
