@@ -1,5 +1,6 @@
-# Step 1: Import the necessary library.
+# Step 1: Import the necessary libraries.
 import yfinance as yf
+from colorama import Fore, Style
 
 # Step 2: Define a list of ticker symbols for multiple companies.
 tickers = [
@@ -15,13 +16,11 @@ for ticker in tickers:
 
     # Step 5: Fetch basic stock information and historical data.
     stock_info = stock.info
-
-    # Use period="5d" and interval="1d" to fetch only the last 5 trading days.
     data = stock.history(period="5d", interval="1d")
 
     # Check if data is available before proceeding.
     if data.empty:
-        print(f"No recent data available for {ticker}. Skipping...\n")
+        print(Fore.RED + f"No recent data available for {ticker}. Skipping...\n" + Style.RESET_ALL)
         continue
 
     # Step 6: Extract key metrics from the stock information.
@@ -32,14 +31,14 @@ for ticker in tickers:
     sector = stock_info.get('sector', 'N/A')  # Define sector here
 
     # Step 7: Display the company's name, ticker symbol, and key metrics.
-    print(f"\nStock Analysis for: {stock_info.get('shortName', 'Unknown Company')} ({ticker})")
-    print(f"Sector: {sector}")  # Use the sector variable here
-    print(f"Current Price: ${current_price}")
-    print(f"52-Week High: ${fifty_two_week_high}")
-    print(f"52-Week Low: ${fifty_two_week_low}")
-    print(f"Average Volume: {average_volume} shares/day")
+    print(Fore.YELLOW + f"\nStock Analysis for: {stock_info.get('shortName', 'Unknown Company')} ({ticker})" + Style.RESET_ALL)
+    print(Fore.CYAN + f"Sector: {sector}" + Style.RESET_ALL)
+    print(Fore.GREEN + f"Current Price: ${current_price}" + Style.RESET_ALL)
+    print(Fore.BLUE + f"52-Week High: ${fifty_two_week_high}" + Style.RESET_ALL)
+    print(Fore.MAGENTA + f"52-Week Low: ${fifty_two_week_low}" + Style.RESET_ALL)
+    print(Fore.YELLOW + f"Average Volume: {average_volume} shares/day" + Style.RESET_ALL)
 
     # Step 8: Print the most recent 5 rows of historical data for this stock.
-    print("\nHistorical Data (Most Recent 5 Days):")
-    print(data)  # Show the fetched data
-    print("-" * 50)  # Separator for readability
+    print(Fore.WHITE + "\nHistorical Data (Most Recent 5 Days):" + Style.RESET_ALL)
+    print(data)
+    print(Fore.LIGHTBLACK_EX + "-" * 50 + Style.RESET_ALL)  # Separator for readability
