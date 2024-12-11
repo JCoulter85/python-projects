@@ -125,8 +125,8 @@ def display_pokemon_stats(data):
 
 # Main loop
 while True:
-    print(Fore.CYAN + "\nWelcome to the Pokémon Info App!" + Style.RESET_ALL)
-    pokemon_name = input(Fore.GREEN + "Enter Pokémon name (or type 'quit' to exit): " + Style.RESET_ALL).strip()
+    print(Fore.LIGHTMAGENTA_EX + "\nWelcome Abagail to the Pokémon Info App!" + Style.RESET_ALL)
+    pokemon_name = input("Enter Pokémon name (or type 'quit' to exit): ").strip()
     
     if pokemon_name.lower() == "quit":
         print(Fore.RED + "Goodbye!" + Style.RESET_ALL)
