@@ -1,9 +1,12 @@
 # Import necessary libraries
 import yfinance as yf  # Library for fetching stock data
-from colorama import Fore, Style  # Library for colored terminal output
+from colorama import init, Fore, Style  # Library for colored terminal output
 import datetime  # For logging timestamps
 
-# Initial list of ticker symbols for the application
+# Initialize Colorama to handle colors in Windows CMD
+init(autoreset=True)
+
+# Initial list of ticker symbols
 tickers = [
     "LMT", "RTX", "NOC", "BA", "BLK", 
     "GD", "BAESY", "HO.PA", "FINMY", "SAABF", 
