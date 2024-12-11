@@ -96,7 +96,7 @@ def compare_companies():
             print(Fore.RED + f"Ticker {ticker} is not in the list. Please add it first." + Style.RESET_ALL)
 
     # Display comparisons
-    print("\nComparison Results:")
+    print(Fore.LIGHTGREEN_EX + "\nComparison Results:" + Style.RESET_ALL)
     for ticker, value in comparisons:
         print(f"{ticker}: {metric.capitalize()} = {value}")
 
