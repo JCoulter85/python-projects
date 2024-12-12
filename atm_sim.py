@@ -31,3 +31,14 @@ def atm_simulator():
             except ValueError:
                 print("Invalid input. please enter a number.")
         
+        elif choice == "3":
+            try:
+                withdraw_amount = float(input("Enter the amount to withdraw: "))
+                if withdraw_amount > balance:
+                    print("Insufficient funds. Please try a smaller amount.")
+                elif withdraw_amount > 0:
+                    withdraw_amount -= balance
+                    print(f"${withdraw_amount.2f}has been withdrawn.")
+                    print(f"Your new balance is: ${balance.2f}")
+                else:
+                    print("Invalid amount. Please enter a number.")
