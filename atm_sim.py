@@ -44,4 +44,10 @@ def atm_simulator():
                     print("Invalid amount. Please enter a number.")
             except ValueError:
                 print("Invalid input. Please enter a number.")
-                    
+        elif choice == 4:
+            print("Thank you for using Jimbo's ATM. Have a lovely day!!!!!!!")
+            
+        else:
+            print("Invalid choice. Please select an option from 1 - 4. Thank you...")
+
+atm_simulator()
