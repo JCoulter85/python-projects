@@ -47,7 +47,7 @@ def atm_simulator():
                 
         elif choice == 4:
             print("Thank you for using Jimbo's ATM. Have a lovely day!!!!!!!")
-            break
+            break #forgot the break to close the app.
             
         else:
             print("Invalid choice. Please select an option from 1 - 4. Thank you...")
