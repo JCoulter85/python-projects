@@ -45,7 +45,7 @@ def atm_simulator():
             except ValueError:
                 print("Invalid input. Please enter a number.")
                 
-        elif choice == 4:
+        elif choice == "4":
             print("Thank you for using Jimbo's ATM. Have a lovely day!!!!!!!")
             break #forgot the break to close the app.
             
