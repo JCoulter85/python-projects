@@ -15,8 +15,8 @@ def atm_simulator():
         choice = input("Enter your choice (1 - 4): ").strip()
         
         if choice == "1":
-        # This will check the users balance
-        print(f"Your current balance is: ${balance:.2f}")
+            # Check balance
+            print(f"Your current balance is: ${balance:.2f}")
         
         elif choice == "2":
         # This will allow the user to deposit money into their account
@@ -24,12 +24,12 @@ def atm_simulator():
                 deposit_amount = float(input("Enter the amount to deposit: "))
                 if deposit_amount > 0:
                     balance += deposit_amount
-                    print(f"${deposit_amount.2f}) has been deposited.")
+                    print(f"${deposit_amount:.2f} has been deposited.")
                     print(f"Your new balance is: ${balance:.2f}")
                 else:
                     print("Invalid amount. Please enter a positive number.")
             except ValueError:
-                print("Invalid input. please enter a number.")
+                print("Invalid input. Please enter a number.")
         
         elif choice == "3":
             try:
@@ -38,7 +38,10 @@ def atm_simulator():
                     print("Insufficient funds. Please try a smaller amount.")
                 elif withdraw_amount > 0:
                     withdraw_amount -= balance
-                    print(f"${withdraw_amount.2f}has been withdrawn.")
-                    print(f"Your new balance is: ${balance.2f}")
+                    print(f"${withdraw_amount:.2f}has been withdrawn.")
+                    print(f"Your new balance is: ${balance:.2f}")
                 else:
                     print("Invalid amount. Please enter a number.")
+            except ValueError:
+                print("Invalid input. Please enter a number.")
+                    
