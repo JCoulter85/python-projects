@@ -37,13 +37,14 @@ def atm_simulator():
                 if withdraw_amount > balance:
                     print("Insufficient funds. Please try a smaller amount.")
                 elif withdraw_amount > 0:
-                    withdraw_amount -= balance
+                    balance -= withdraw_amount # I had these flipped around.
                     print(f"${withdraw_amount:.2f}has been withdrawn.")
                     print(f"Your new balance is: ${balance:.2f}")
                 else:
                     print("Invalid amount. Please enter a number.")
             except ValueError:
                 print("Invalid input. Please enter a number.")
+                
         elif choice == 4:
             print("Thank you for using Jimbo's ATM. Have a lovely day!!!!!!!")
             
