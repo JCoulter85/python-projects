@@ -48,15 +48,15 @@ def atm_simulator():
                     print(f"${withdraw_amount:.2f}has been withdrawn.")
                     print(f"Your new balance is: ${balance:.2f}")
                 else:
-                    print("Invalid amount. Please enter a number.")
+                    print(Fore.LIGHTWHITE_EX + "Invalid amount. Please enter a number." + Style.RESET_ALL)
             except ValueError:
-                print("Invalid input. Please enter a number.")
+                print(Fore.LIGHTWHITE_EX + "Invalid input. Please enter a number." + Style.RESET_ALL)
                 
         elif choice == "4":
-            print("Thank you for using Jimbo's ATM. Have a lovely day!!!!!!!")
+            print(Fore.LIGHTGREEN_EX + "Thank you for using Jimbo's ATM. Have a lovely day!!!!!!!" + Style.RESET_ALL)
             break #forgot the break to close the app.
             
         else:
-            print("Invalid choice. Please select an option from 1 - 4. Thank you...")
+            print(Fore.LIGHTWHITE_EX + "Invalid choice. Please select an option from 1 - 4. Thank you..." + Style.RESET_ALL)
 
 atm_simulator()
