@@ -1,10 +1,17 @@
+from colorama import init, Fore, Style
+
+# Initialize Colorama for color support
+init(autoreset=True)
+
 def show_menu():
-    """This will display the menu for the user"""
-    print("\nWelcome to the ATM!")
-    print("1. Check Balance")
-    print("2. Deposit Money")
-    print("3. Withdarw Money")
-    print("4. Exit")
+    """
+    Displays the menu for the user with colored text.
+    """
+    print(Fore.LIGHTGREEN_EX + "\nWelcome to the ATM!" + Style.RESET_ALL)
+    print(Fore.CYAN + "1. Check Balance" + Style.RESET_ALL)
+    print(Fore.YELLOW + "2. Deposit Money" + Style.RESET_ALL)
+    print(Fore.RED + "3. Withdraw Money" + Style.RESET_ALL)
+    print(Fore.BLUE + "4. Exit" + Style.RESET_ALL)
     
 def atm_simulator():
     """This runs the ATM simulation."""
