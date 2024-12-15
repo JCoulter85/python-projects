@@ -27,7 +27,7 @@ def type_out(text, delay=0.03):
 # Faster typing animation for forecast
 def type_out_fast(text, delay=0.001):
     """
-    Simulate faster retro typing animation for large outputs.
+    Simulate faster typing animation for large outputs.
     """
     for char in text:
         sys.stdout.write(char)
@@ -64,7 +64,7 @@ def show_intro():
 ⠀⠀⠀⠀⠀⠀⠀⠀⠈⠻⣿⣿⣿⣿⣿⣿⣿⣿⣽⣿⡟⢡⠖⣡⡴⠂⣀⣀⣀⣰⣁⣀⣀⣸⠀⠀⠀⠀⠈⠁⠀⠀⠈⠀⣠⠜⠋⣠⠁⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⢿⣿⣿⣿⡟⢿⣿⣿⣷⡟⢋⣥⣖⣉⠀⠈⢁⡀⠤⠚⠿⣷⡦⢀⣠⣀⠢⣄⣀⡠⠔⠋⠁⠀⣼⠃⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠻⣿⣿⡄⠈⠻⣿⣿⢿⣛⣩⠤⠒⠉⠁⠀⠀⠀⠀⠀⠉⠒⢤⡀⠉⠁⠀⠀⠀⠀⠀⢀⡿⠀⠀⠀
-    """ + Style.RESET_ALL, delay=0.01)
+    """ + Style.RESET_ALL, delay=0.001)
     
     type_out(Fore.CYAN + "Welcome to the Weather Application!" + Style.RESET_ALL)
 
@@ -73,7 +73,7 @@ def loading_effect():
     """
     Simulate a loading animation.
     """
-    type_out(Fore.YELLOW + "Fetching data", delay=0.05)
+    type_out(Fore.YELLOW + "Fetching data", delay=0.004)
     for _ in range(3):
         time.sleep(0.5)
         sys.stdout.write(Fore.YELLOW + ".")
