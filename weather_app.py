@@ -197,8 +197,7 @@ def main_menu():
     type_out(Fore.LIGHTGREEN_EX + "3. View today's weather")
     type_out(Fore.LIGHTGREEN_EX + "4. View 5-day forecast")
     type_out(Fore.LIGHTGREEN_EX + "5. Fun weather fact")
-    type_out(Fore.LIGHTGREEN_EX + "6. View weekly forecast")
-    type_out(Fore.LIGHTGREEN_EX + "7. Exit")
+    type_out(Fore.LIGHTGREEN_EX + "6. Exit")
 
 # Main application loop
 def main():
@@ -231,16 +230,8 @@ def main():
 
         elif choice == "5":
             type_out(Fore.LIGHTGREEN_EX + weather_fun_fact())
+
         elif choice == "6":
-            if not city:
-                type_out(Fore.RED + "Please select a city first.")
-                continue
-            forecast_data = requests.get(FORECAST_URL, params={"q": city, "appid": API_KEY, "units": "imperial"}).json()
-            if "list" in forecast_data:
-                display_weekly_forecast(forecast_data)
-            else:
-                type_out(Fore.RED + "Unable to fetch weekly forecast data.")
-        elif choice == "7":
             type_out(Fore.LIGHTGREEN_EX + "Goodbye! Stay safe!")
             break
         else:
