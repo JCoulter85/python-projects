@@ -1,181 +1,140 @@
 import requests
-from colorama import init, Fore, Back, Style
-from datetime import datetime, timedelta
-import time
-import sys
-import os
-import random
-import json
-from pytz import timezone
+from tkinter import Tk, Label
+from PIL import Image, ImageTk
+import io
+from colorama import Fore, Style, init
 
-# Ensure UTF-8 encoding is used
-sys.stdout.reconfigure(encoding='utf-8')
+# Initialize colorama with conversion for Windows CMD
+init(convert=True)
 
-# Initialize Colorama for colored output
-init(autoreset=True, convert=True)
-
-# Define the API key and base URLs
-API_KEY = os.getenv("f5e6221e52b39e2c780520e5f85e7354")
-if not API_KEY:
-    raise ValueError("API Key not found. Set the OPENWEATHER_API_KEY environment variable.")
-CURRENT_WEATHER_URL = "http://api.openweathermap.org/data/2.5/weather"
-FORECAST_URL = "http://api.openweathermap.org/data/2.5/forecast"
-AIR_QUALITY_URL = "http://api.openweathermap.org/data/2.5/air_pollution"
-ONE_CALL_URL = "http://api.openweathermap.org/data/2.5/onecall"
-
-# Typing animation function
-def type_out(text, delay=0.03):
-    """
-    Simulate retro typing animation.
-    """
-    for char in text:
-        sys.stdout.write(char)
-        sys.stdout.flush()
-        time.sleep(delay)
-    print()
-
-# Faster typing animation for forecast
-def type_out_fast(text, delay=0.001):
-    """
-    Simulate faster typing animation for large outputs.
-    """
-    for char in text:
-        sys.stdout.write(char)
-        sys.stdout.flush()
-        time.sleep(delay)
-    print()
-
-# Generate ASCII bar chart
-def ascii_bar_chart(values, label="Temperature", max_width=30):
-    """
-    Generate an ASCII bar chart for a list of values.
-    """
-    max_value = max(values)
-    scale = max_width / max_value if max_value > 0 else 0
-    chart = []
-    for value in values:
-        bar = "█" * int(value * scale)
-        chart.append(f"{label}: {value}°F | {bar}")
-    return "\n".join(chart)
-
-# Fun facts generator
-def weather_fun_fact():
-    """
-    Provide a random weather-related fun fact.
-    """
-    facts = [
-        "Did you know? The highest temperature ever recorded on Earth was 134°F in Furnace Creek, California, in 1913!",
-        "Rainbows are actually full circles, but we usually see only the top half from the ground.",
-        "Lightning can be up to five times hotter than the surface of the sun!",
-        "The fastest wind speed ever recorded was 253 mph during a tropical cyclone in Australia in 1996.",
-        "The coldest temperature ever recorded on Earth was -128.6°F in Antarctica in 1983!",
-    ]
-    return random.choice(facts)
-
-# Real-Time Weather Updates
-def real_time_updates(city, interval=300, updates=10):
-    """
-    Provide real-time weather updates for the specified city.
-    Updates every 'interval' seconds, up to 'updates' number of times.
-    """
-    type_out(Fore.GREEN + f"\nStarting real-time updates for {city}. Updates every {interval // 60} minutes.")
-    type_out(Fore.RED + "Press Ctrl+C to stop." + Style.RESET_ALL)
-    try:
-        for _ in range(updates):  # Limit updates
-            weather_data = get_weather(city)
-            if weather_data:
-                display_weather(weather_data)
-            time.sleep(interval)
-    except KeyboardInterrupt:
-        type_out(Fore.RED + "\nReal-time updates stopped." + Style.RESET_ALL)
-
-# Retro ASCII art introduction
-def show_intro():
-    """
-    Display a retro-style welcome screen with ASCII art.
-    """
-    type_out(Fore.GREEN + Back.BLACK + """
-                                ⁠⁠⁠⁠
-    """ + Style.RESET_ALL, delay=0.001)
-
-    type_out(Fore.CYAN + "Welcome to the Weather Application!" + Style.RESET_ALL)
-
-# Fetch current weather data
-def get_weather(city):
-    """
-    Fetch current weather data for the specified city.
-    """
-    params = {"q": city, "appid": API_KEY, "units": "imperial"}
-    try:
-        response = requests.get(CURRENT_WEATHER_URL, params=params)
-        response.raise_for_status()
-        data = response.json()
-        if data.get("cod") != 200:
-            type_out(Fore.RED + f"Error: {data.get('message', 'Unknown error')}")
-            return None
-        return data
-    except requests.exceptions.RequestException as e:
-        type_out(Fore.RED + f"An error occurred while fetching weather data: {e}")
+# Fetch Pokémon data from the API
+def get_pokemon_data(pokemon_name):
+    url = f"https://pokeapi.co/api/v2/pokemon/{pokemon_name.lower()}"
+    response = requests.get(url)
+    
+    if response.status_code == 200:
+        return response.json()
+    else:
+        print(Fore.RED + "Pokémon not found! Please check the name." + Style.RESET_ALL)
         return None
 
-# Display current weather in a retro dashboard-style layout
-def display_weather(data):
-    city = data["name"]
-    temp = data["main"]["temp"]
-    humidity = data["main"]["humidity"]
-    wind_speed = data["wind"]["speed"]
-    weather_desc = data["weather"][0]["description"].capitalize()
-    lat, lon = data["coord"]["lat"], data["coord"]["lon"]
+# Fetch weaknesses based on Pokémon types
+def get_weaknesses(types):
+    weaknesses = set()
+    for pokemon_type in types:
+        type_url = pokemon_type['type']['url']
+        response = requests.get(type_url)
+        
+        if response.status_code == 200:
+            type_data = response.json()
+            for weak_type in type_data['damage_relations']['double_damage_from']:
+                weaknesses.add(weak_type['name'])
+    return list(weaknesses)
 
-    # Convert sunrise/sunset to local time
-    tz_offset = data["timezone"]  # Offset in seconds
-    local_time = datetime.now() + timedelta(seconds=tz_offset)
-    sunrise = datetime.fromtimestamp(data["sys"]["sunrise"]) + timedelta(seconds=tz_offset)
-    sunset = datetime.fromtimestamp(data["sys"]["sunset"]) + timedelta(seconds=tz_offset)
+# Fetch evolution chain from species data
+def get_evolution_chain(species_url):
+    response = requests.get(species_url)
+    if response.status_code == 200:
+        species_data = response.json()
+        evolution_chain_url = species_data['evolution_chain']['url']
+        evolution_response = requests.get(evolution_chain_url)
+        
+        if evolution_response.status_code == 200:
+            evolution_data = evolution_response.json()
+            chain = evolution_data['chain']
+            
+            evolutions = []
+            while chain:
+                evolutions.append(chain['species']['name'].capitalize())
+                chain = chain['evolves_to'][0] if chain['evolves_to'] else None
+            return evolutions
+    return []
 
-    type_out(Fore.LIGHTCYAN_EX + "\n==============================")
-    type_out(Fore.LIGHTCYAN_EX + f"  {city.upper()} WEATHER  ")
-    type_out(Fore.LIGHTCYAN_EX + "==============================")
-    type_out(Fore.GREEN + f"  Local Time: {local_time.strftime('%I:%M %p')}")
-    type_out(Fore.GREEN + f"  Temperature: {temp}°F")
-    type_out(Fore.GREEN + f"  Condition: {weather_desc}")
-    type_out(Fore.GREEN + f"  Humidity: {humidity}%")
-    type_out(Fore.GREEN + f"  Wind Speed: {wind_speed} mph")
-    type_out(Fore.GREEN + f"  Sunrise: {sunrise.strftime('%I:%M %p')}")
-    type_out(Fore.GREEN + f"  Sunset: {sunset.strftime('%I:%M %p')}")
-    type_out(Fore.LIGHTCYAN_EX + "==============================\n" + Style.RESET_ALL)
+# Display Pokémon image using tkinter
+def show_pokemon_image(image_url):
+    response = requests.get(image_url)
+    if response.status_code == 200:
+        image_data = response.content
+        image = Image.open(io.BytesIO(image_data))
+        image = image.resize((200, 200))
 
-# Display 5-Day Forecast with ASCII Chart
-def display_forecast(data):
-    """
-    Display 5-day weather forecast in a formatted layout.
-    """
-    type_out(Fore.CYAN + "\n5-Day Weather Forecast:")
-    type_out(Fore.CYAN + "-" * 40 + Style.RESET_ALL)
+        # Display image in a tkinter window
+        root = Tk()
+        root.title("Pokémon Image")
+        img = ImageTk.PhotoImage(image)
+        label = Label(root, image=img)
+        label.image = img
+        label.pack()
+        root.mainloop()
 
-    forecast_by_day = {}
-    for forecast in data["list"]:
-        timestamp = datetime.fromtimestamp(forecast["dt"])
-        date = timestamp.strftime("%A, %b %d")
-        temp = forecast["main"]["temp"]
-        weather_desc = forecast["weather"][0]["description"].capitalize()
-        if date not in forecast_by_day:
-            forecast_by_day[date] = []
-        forecast_by_day[date].append(temp)
+# Display Pokémon stats
+def display_pokemon_stats(data):
+    print(Fore.YELLOW + "\nPokémon Details:" + Style.RESET_ALL)
+    print(Fore.GREEN + f"Name: {data['name'].capitalize()}" + Style.RESET_ALL)
+    print(f"Base Experience: {data['base_experience']}")
+    
+    # Extract and display types
+    types = data.get('types', [])
+    if not types:
+        print("No types found for this Pokémon.")
+        return
 
-    # Calculate and display daily averages
-    for date, temps in forecast_by_day.items():
-        avg_temp = round(sum(temps) / len(temps), 1)
-        type_out(Fore.LIGHTGREEN_EX + f"\n{date}: {avg_temp}°F")
-        chart = ascii_bar_chart(temps, label="Daily Temperatures")
-        type_out(Fore.LIGHTCYAN_EX + chart + Style.RESET_ALL)
+    type_names = [t['type']['name'] for t in types]
+    print(Fore.CYAN + f"Types: {', '.join(type_names)}" + Style.RESET_ALL)
+    
+    # Display stats
+    print(Fore.BLUE + "\nStats:" + Style.RESET_ALL)
+    for stat in data['stats']:
+        print(f"{stat['stat']['name'].capitalize()}: {stat['base_stat']}")
+    
+    # Display abilities
+    print(Fore.MAGENTA + "\nAbilities:" + Style.RESET_ALL)
+    for ability in data['abilities']:
+        print(f"- {ability['ability']['name'].capitalize()}")
+    
+    # Display Pokémon moves
+    print(Fore.YELLOW + "\nMoves (Specific to This Pokémon):" + Style.RESET_ALL)
+    level_up_moves = [
+        move['move']['name'].capitalize()
+        for move in data['moves']
+        if any(method['move_learn_method']['name'] == 'level-up' for method in move['version_group_details'])
+    ]
+    if level_up_moves:
+        print(", ".join(level_up_moves[:10]))  # Limit to 10 moves
+    else:
+        print("No level-up moves found for this Pokémon.")
 
-if __name__ == "__main__":
-    show_intro()
-    city = input(Fore.YELLOW + "Enter your city: " + Style.RESET_ALL)
-    weather_data = get_weather(city)
-    if weather_data:
-        display_weather(weather_data)
-    forecast_data = requests.get(FORECAST_URL, params={"q": city, "appid": API_KEY, "units": "imperial"}).json()
-    if forecast_data:
-        display_forecast(forecast_data)
+    # Fetch and display weaknesses
+    weaknesses = get_weaknesses(types)
+    print(Fore.RED + "\nWeaknesses:" + Style.RESET_ALL)
+    print(", ".join(weaknesses))
+    
+    # Fetch and display evolution chain
+    print(Fore.YELLOW + "\nEvolution Chain:" + Style.RESET_ALL)
+    species_url = data['species']['url']
+    evolutions = get_evolution_chain(species_url)
+    print(" → ".join(evolutions))
+
+    # Show Pokémon sprite
+    sprite_url = data['sprites']['front_default']
+    if sprite_url:
+        print("\nDisplaying Pokémon image...")
+        show_pokemon_image(sprite_url)
+    else:
+        print("No image available for this Pokémon.")
+
+# Main loop
+while True:
+    print(Fore.LIGHTMAGENTA_EX + "\nWelcome Abagail to the Pokémon Info App!" + Style.RESET_ALL)
+    pokemon_name = input("Enter Pokémon name (or type 'quit' to exit): ").strip()
+    
+    if pokemon_name.lower() == "quit":
+        print(Fore.RED + "Goodbye!" + Style.RESET_ALL)
+        break
+
+    data = get_pokemon_data(pokemon_name)
+    if not data:
+        print(Fore.RED + "No data available for this Pokémon." + Style.RESET_ALL)
+        continue
+
+    display_pokemon_stats(data)
