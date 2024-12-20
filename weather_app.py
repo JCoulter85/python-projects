@@ -94,6 +94,7 @@ def option_one():
     """
     Fetch and display weather information for the user's current location.
     """
+    global city
     city, state = get_location()
     if city == "Unknown City":
         type_out(Fore.RED + "Unable to detect your location. Please try again or select a city manually.")
@@ -106,6 +107,25 @@ def option_one():
         display_weather(weather_data)
     else:
         type_out(Fore.RED + "Unable to fetch weather information for your location.")
+
+# Option 2: Select a city manually
+def option_two():
+    """
+    Allow user to manually enter a city and display weather information.
+    """
+    global city
+    type_out(Fore.LIGHTGREEN_EX + "\nPlease enter the city and state in the format: City, State")
+    user_input = input(Fore.LIGHTGREEN_EX + "City, State: " + Style.RESET_ALL)
+    try:
+        city, state = map(str.strip, user_input.split(","))
+        weather_data = get_weather(city)
+        if weather_data:
+            type_out(Fore.LIGHTGREEN_EX + f"\nWeather Information for {city}, {state}:")
+            display_weather(weather_data)
+        else:
+            type_out(Fore.RED + "Unable to fetch weather information for the entered city.")
+    except ValueError:
+        type_out(Fore.RED + "Invalid format. Please use the format: City, State")
 
 # Fetch current weather data
 def get_weather(city):
@@ -211,8 +231,9 @@ def main_menu():
 
 # Main application loop
 def main():
-    type_out(Fore.LIGHTGREEN_EX + Back.BLACK + "Welcome to the Comprehensive Weather App!")
+    global city
     city = None
+    type_out(Fore.LIGHTGREEN_EX + Back.BLACK + "Welcome to the Comprehensive Weather App!")
     while True:
         main_menu()
         choice = input(Fore.LIGHTGREEN_EX + "Your choice: " + Style.RESET_ALL)
@@ -220,11 +241,7 @@ def main():
         if choice == "1":
             option_one()
         elif choice == "2":
-            city = input(Fore.LIGHTGREEN_EX + "Enter the city name: " + Style.RESET_ALL)
-            weather_data = get_weather(city)
-            if weather_data:
-                state = weather_data["sys"].get("country", "Unknown")  # Fetch the country/state
-                type_out(Fore.LIGHTGREEN_EX + f"City: {city}, State: {state}")
+            option_two()
         elif choice == "3":
             if not city:
                 type_out(Fore.RED + "Please select a city first.")
@@ -238,7 +255,7 @@ def main():
                 continue
             forecast_data = requests.get(FORECAST_URL, params={"q": city, "appid": API_KEY, "units": "imperial"}).json()
             if "list" in forecast_data:
-                display_forecast(forecast_data)  # Using the existing weekly forecast function
+                display_forecast(forecast_data)
             else:
                 type_out(Fore.RED + "Unable to fetch forecast data.")
 
