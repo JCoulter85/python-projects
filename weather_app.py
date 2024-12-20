@@ -31,6 +31,55 @@ def type_out(text, delay=0.001):
         time.sleep(delay)
     print(Style.RESET_ALL)
 
+# ASCII art for menu options
+def display_ascii(option):
+    art = {
+        "1": """
+        _____ _   _  ___  ____  _____ ____  
+       |_   _| | | |/ _ \\/ ___|| ____|  _ \\ 
+         | | | |_| | | | \\___ \\|  _| | | | |
+         | | |  _  | |_| |___) | |___| |_| |
+         |_| |_| |_|\\___/|____/|_____|____/ 
+        """,
+        "2": """
+         ____  _   _ ___ ____  _     _____ 
+        / ___|| | | |_ _|  _ \\| |   | ____|
+        \\___ \\| |_| || || |_) | |   |  _|  
+         ___) |  _  || ||  __/| |___| |___ 
+        |____/|_| |_|___|_|   |_____|_____|
+        """,
+        "3": """
+         _____   ____  _     _____ 
+        |_   _| / ___|| |   | ____|
+          | |   \\___ \\| |   |  _|  
+          | |    ___) | |___| |___ 
+          |_|   |____/|_____|_____|
+        """,
+        "4": """
+         ____  _  __ _____    ____  _   _ ___  
+        |  _ \\| |/ /| ____|  |  _ \\| | | |_ _| 
+        | | | | ' / |  _|    | |_) | |_| || |  
+        | |_| | . \\ | |___   |  __/|  _  || |  
+        |____/|_|\\_\\|_____|  |_|   |_| |_|___| 
+        """,
+        "5": """
+         _____ _   _ _   _    __        __         _     _  
+        |  ___| | | | \\ | |   \\ \\      / /__  _ __| | __| | 
+        | |_  | | | |  \\| |    \\ \\ /\\ / / _ \\| '__| |/ _` | 
+        |  _| | |_| | |\\  |     \\ V  V / (_) | |  | | (_| | 
+        |_|    \\___/|_| \\_|      \\_/\\_/ \\___/|_|  |_|\\__,_| 
+        """,
+        "6": """
+         _____  ____  _   _  _____  _ 
+        | ____||  _ \\| | | || ____|| |
+        |  _|  | |_) | |_| ||  _|  | |
+        | |___ |  __/|  _  || |___ |_|
+        |_____||_|   |_| |_||_____|(_)
+        """
+    }
+    if option in art:
+        type_out(Fore.LIGHTGREEN_EX + art[option] + Style.RESET_ALL, delay=0.0005)
+
 # ASCII bar chart generator
 def ascii_bar_chart(values, label="Temperature", max_width=40):
     """
@@ -64,14 +113,33 @@ def show_intro():
     Display a retro-style welcome screen with ASCII art.
     """
     type_out(Fore.LIGHTGREEN_EX + Back.BLACK + """
-    ============================================
+==========================================================
     ███╗   ███╗ █████╗ ███████╗███████╗███████╗
     ████╗ ████║██╔══██╗╚══███╔╝██╔════╝██╔════╝
     ██╔████╔██║███████║  ███╔╝ █████╗  █████╗  
     ██║╚██╔╝██║██╔══██║ ███╔╝  ██╔══╝  ██╔══╝  
     ██║ ╚═╝ ██║██║  ██║███████╗███████╗███████╗
     ╚═╝     ╚═╝╚═╝  ╚═╝╚══════╝╚══════╝╚══════╝
-    ============================================
+    ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣀⣀⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣀⣤⡴⠶⠞⠛⠛⠉⠉⠉⠉⠉⠉⠛⠛⠶⢦⣄⡀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣠⣤⣶⣾⠿⠛⠉⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⠀⠀⠀⠈⠛⢦⡀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣤⠶⢛⣩⠶⠛⠉⠀⠀⠀⣀⣤⡴⠶⠚⠛⠛⠛⠉⠛⠛⠛⢶⡟⠉⢻⡄⠀⠀⠀⠈⢻⡄
+⠀⠀⠀⠀⠀⠀⠀⣠⡴⠟⢉⣠⠶⠋⠁⠀⠀⣠⡴⠞⠋⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⠷⡤⠾⣇⠀⠀⠀⠀⠀⣿
+⠀⠀⠀⠀⣠⡴⠛⠁⣀⡴⠛⠁⠀⢀⣠⠶⠛⠁⠀⠀⠀⣀⣠⡤⠶⠒⠛⠛⠛⠛⠛⠶⣤⡀⠀⠀⠀⢹⡆⠀⠀⠀⠀⢸
+⠀⢀⣴⠟⠁⠀⣠⡾⠋⠀⠀⢀⡴⠛⠁⠀⢰⠞⠳⡶⠛⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⣷⠀⠀⠀⢈⡇⠀⠀⠀⠀⣾
+⢴⠟⠁⠀⢀⡼⠋⠀⠀⢀⡴⠋⠀⠀⠀⣠⡾⠷⠶⠇⢀⣠⣤⠶⠖⠲⢶⣄⠀⠀⠀⠀⠀⡿⠀⠀⠀⢸⡇⠀⠀⠀⢰⡏
+⠀⠀⠀⣰⠟⠀⠀⠀⣴⠏⠀⠀⠀⣠⠞⠉⠀⠀⣠⡶⠋⠁⠀⠀⠀⠀⢀⡿⠀⠀⠀⠀⣼⠃⠀⠀⢀⡟⠂⠀⠀⢠⡟⠀
+⠀⢀⣼⠋⠀⠀⢀⡾⠁⠀⠀⢠⡞⠁⠀⠀⢠⡾⠁⠀⠀⠀⠀⣀⣀⣠⡾⠁⠀⠀⣠⡾⠁⠀⠀⢠⡞⠁⠀⠀⣰⠟⠀⠀
+⠀⣾⠃⠀⢠⡟⠛⣷⠂⠀⢠⡟⠀⠀⠀⠀⢾⡀⠀⠀⠀⠀⣸⣏⣹⡏⠀⠀⣠⡾⠋⠀⠀⢀⣴⠏⠀⠀⢀⡼⠋⠀⠀⠀
+⣸⠇⠀⠀⠈⢻⡶⠛⠀⠀⣿⠀⠀⠀⠀⠀⠈⠛⠲⠖⠚⠋⠉⠉⠉⣀⣤⠞⠋⠀⠀⢀⣴⠟⠁⠀⠀⣰⠟⠁⠀⣴⠆⠀
+⣿⠀⠀⠀⠀⢸⡇⠀⠀⠀⢻⣆⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣤⠶⠛⠉⣀⣀⡀⣀⡴⠟⠁⠀⢀⣤⠞⠁⢀⣴⠟⠁⠀⠀
+⣿⠀⠀⠀⠀⠘⣧⠀⠀⠀⠀⠙⠳⠶⠤⣤⠤⠶⠶⠚⠋⠉⠀⠀⠀⡟⠉⠈⢻⡏⠀⠀⣀⡴⠛⠁⣠⡶⠋⠁⠀⠀⠀⠀
+⢻⡀⠀⠀⠀⠀⠘⢷⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣀⣤⠶⠻⢦⣤⠟⣀⣤⠞⢋⣠⡴⠛⠁⠀⠀⠀⠀⠀⠀⠀
+⠈⢿⣄⠀⠀⠀⠀⠀⠈⠛⠳⠶⠤⠤⠤⠤⠤⠴⠶⠒⠛⠉⠁⠀⠀⢀⣠⡴⣞⣋⣤⠶⠋⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠙⢷⡶⠛⠳⣦⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣀⣤⣴⣾⠿⠿⠛⠋⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠘⣧⡀⣀⣿⠦⣤⣤⣤⣤⣤⣤⠤⠶⠶⠞⠛⠋⠉⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠈⠉⠉
+==========================================================
     """ + Style.RESET_ALL, delay=0.001)
 
 # Fetch user's current location
@@ -95,6 +163,7 @@ def option_one():
     Fetch and display weather information for the user's current location.
     """
     global city
+    display_ascii("1")
     city, state = get_location()
     if city == "Unknown City":
         type_out(Fore.RED + "Unable to detect your location. Please try again or select a city manually.")
@@ -114,6 +183,7 @@ def option_two():
     Allow user to manually enter a city and display weather information.
     """
     global city
+    display_ascii("2")
     type_out(Fore.LIGHTGREEN_EX + "\nPlease enter the city and state in the format: City, State")
     user_input = input(Fore.LIGHTGREEN_EX + "City, State: " + Style.RESET_ALL)
     try:
@@ -170,6 +240,7 @@ def display_forecast(forecast_data):
     """
     Display a detailed 5-day weather forecast.
     """
+    display_ascii("4")
     type_out(Fore.LIGHTGREEN_EX + "\n5-Day Detailed Weather Forecast:")
     type_out(Fore.LIGHTGREEN_EX + "-" * 50)
 
@@ -233,6 +304,7 @@ def main_menu():
 def main():
     global city
     city = None
+    show_intro()  # Ensure the intro is displayed at the start
     type_out(Fore.LIGHTGREEN_EX + Back.BLACK + "Welcome to the Comprehensive Weather App!")
     while True:
         main_menu()
@@ -243,6 +315,7 @@ def main():
         elif choice == "2":
             option_two()
         elif choice == "3":
+            display_ascii("3")
             if not city:
                 type_out(Fore.RED + "Please select a city first.")
                 continue
@@ -260,9 +333,11 @@ def main():
                 type_out(Fore.RED + "Unable to fetch forecast data.")
 
         elif choice == "5":
+            display_ascii("5")
             type_out(Fore.LIGHTGREEN_EX + weather_fun_fact())
 
         elif choice == "6":
+            display_ascii("6")
             type_out(Fore.LIGHTGREEN_EX + "Goodbye! Stay safe!")
             break
         else:
