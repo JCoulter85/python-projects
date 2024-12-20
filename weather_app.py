@@ -145,44 +145,54 @@ def display_weather(data):
     type_out(Fore.LIGHTGREEN_EX + Back.BLACK + f"Sunrise: {sunrise.strftime('%I:%M %p')}")
     type_out(Fore.LIGHTGREEN_EX + Back.BLACK + f"Sunset: {sunset.strftime('%I:%M %p')}")
 
-# Display weekly forecast
-def display_weekly_forecast(forecast_data):
+# Display detailed 5-day forecast
+def display_forecast(forecast_data):
     """
-    Display a detailed weekly weather forecast with high/low temperatures and weather conditions.
+    Display a detailed 5-day weather forecast.
     """
-    type_out(Fore.LIGHTGREEN_EX + "\nWeekly Weather Forecast:")
+    type_out(Fore.LIGHTGREEN_EX + "\n5-Day Detailed Weather Forecast:")
     type_out(Fore.LIGHTGREEN_EX + "-" * 50)
 
-    # Process forecast data to group by day
-    daily_forecasts = {}
+    forecast_by_day = {}
     for entry in forecast_data["list"]:
         dt = datetime.fromtimestamp(entry["dt"])
         date = dt.strftime("%A, %b %d")
         temp = entry["main"]["temp"]
+        humidity = entry["main"]["humidity"]
+        wind_speed = entry["wind"]["speed"]
         condition = entry["weather"][0]["description"].capitalize()
 
-        if date not in daily_forecasts:
-            daily_forecasts[date] = {"temps": [], "conditions": []}
+        if date not in forecast_by_day:
+            forecast_by_day[date] = {
+                "temps": [],
+                "humidities": [],
+                "wind_speeds": [],
+                "conditions": [],
+            }
 
-        daily_forecasts[date]["temps"].append(temp)
-        daily_forecasts[date]["conditions"].append(condition)
+        forecast_by_day[date]["temps"].append(temp)
+        forecast_by_day[date]["humidities"].append(humidity)
+        forecast_by_day[date]["wind_speeds"].append(wind_speed)
+        forecast_by_day[date]["conditions"].append(condition)
 
-    # Display high/low and conditions for each day
-    for date, details in daily_forecasts.items():
+    # Display detailed forecast for each day
+    for date, details in forecast_by_day.items():
+        avg_temp = round(sum(details["temps"]) / len(details["temps"]), 1)
         high_temp = round(max(details["temps"]), 1)
         low_temp = round(min(details["temps"]), 1)
+        avg_humidity = round(sum(details["humidities"]) / len(details["humidities"]), 1)
+        avg_wind_speed = round(sum(details["wind_speeds"]) / len(details["wind_speeds"]), 1)
         most_common_condition = max(set(details["conditions"]), key=details["conditions"].count)
 
         type_out(Fore.LIGHTGREEN_EX + f"\n{date}")
-        type_out(Fore.LIGHTGREEN_EX + f"  High: {high_temp}°F  |  Low: {low_temp}°F")
+        type_out(Fore.LIGHTGREEN_EX + f"  High: {high_temp}°F | Low: {low_temp}°F | Avg: {avg_temp}°F")
+        type_out(Fore.LIGHTGREEN_EX + f"  Avg Humidity: {avg_humidity}%")
+        type_out(Fore.LIGHTGREEN_EX + f"  Avg Wind Speed: {avg_wind_speed} mph")
         type_out(Fore.LIGHTGREEN_EX + f"  Condition: {most_common_condition}")
 
-    # Display an ASCII bar chart of temperatures
+    # Display temperature trend as an ASCII chart
     type_out(Fore.LIGHTGREEN_EX + "\nTemperature Trend (°F):")
-    type_out(Fore.LIGHTGREEN_EX + "-" * 50)
-
-    # Collect daily averages for the chart
-    daily_averages = [round(sum(details["temps"]) / len(details["temps"]), 1) for details in daily_forecasts.values()]
+    daily_averages = [round(sum(details["temps"]) / len(details["temps"]), 1) for details in forecast_by_day.values()]
     chart = ascii_bar_chart(daily_averages, label="Avg Temp")
     type_out(Fore.LIGHTGREEN_EX + chart + Style.RESET_ALL)
 
@@ -211,6 +221,10 @@ def main():
             option_one()
         elif choice == "2":
             city = input(Fore.LIGHTGREEN_EX + "Enter the city name: " + Style.RESET_ALL)
+            weather_data = get_weather(city)
+            if weather_data:
+                state = weather_data["sys"].get("country", "Unknown")  # Fetch the country/state
+                type_out(Fore.LIGHTGREEN_EX + f"City: {city}, State: {state}")
         elif choice == "3":
             if not city:
                 type_out(Fore.RED + "Please select a city first.")
@@ -224,7 +238,7 @@ def main():
                 continue
             forecast_data = requests.get(FORECAST_URL, params={"q": city, "appid": API_KEY, "units": "imperial"}).json()
             if "list" in forecast_data:
-                display_weekly_forecast(forecast_data)  # Using the existing weekly forecast function
+                display_forecast(forecast_data)  # Using the existing weekly forecast function
             else:
                 type_out(Fore.RED + "Unable to fetch forecast data.")
 
