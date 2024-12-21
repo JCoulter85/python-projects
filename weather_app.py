@@ -1,6 +1,6 @@
 import requests
 from colorama import init, Fore, Back, Style
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone  # Add timezone here
 import time
 import sys
 import os
@@ -251,8 +251,11 @@ def display_weather(data):
 
     # Convert sunrise/sunset to local time
     tz_offset = data["timezone"]
-    sunrise = datetime.fromtimestamp(data["sys"]["sunrise"]) + timedelta(seconds=tz_offset)
-    sunset = datetime.fromtimestamp(data["sys"]["sunset"]) + timedelta(seconds=tz_offset)
+    sunrise = datetime.fromtimestamp(data["sys"]["sunrise"], timezone.utc) + timedelta(seconds=tz_offset)
+    sunset = datetime.fromtimestamp(data["sys"]["sunset"], timezone.utc) + timedelta(seconds=tz_offset)
+
+    type_out(Fore.LIGHTGREEN_EX + Back.BLACK + f"Sunrise: {sunrise.strftime('%I:%M %p')}")
+    type_out(Fore.LIGHTGREEN_EX + Back.BLACK + f"Sunset: {sunset.strftime('%I:%M %p')}")
 
     type_out(Fore.LIGHTGREEN_EX + Back.BLACK + f"\n{city.upper()} WEATHER:")
     type_out(Fore.LIGHTGREEN_EX + Back.BLACK + f"Temperature: {temp}°F")
